@@ -311,7 +311,7 @@ export class DraggableControl implements ComponentFramework.StandardControl<IInp
 
         this.container.appendChild(board)
         console.log("hsdfcfvgbhnfcvxcvii");
-        console.log("new");
+       
     }
 
     private async updateTaskStatus(taskId: string, newStatus: number): Promise<void> {
