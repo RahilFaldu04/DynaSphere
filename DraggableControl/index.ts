@@ -227,53 +227,73 @@ export class DraggableControl implements ComponentFramework.StandardControl<IInp
 
                 taskList.appendChild(card);
             }
-                // Add Task Button
+            // Add Task Button
+            const addTaskBtn = document.createElement("div");
+            addTaskBtn.innerText = "+ Create new task";
 
-                const addTaskBtn = document.createElement("button");
-                addTaskBtn.innerText = "+ Add Task";
-                addTaskBtn.style.background = "transparent";
-                addTaskBtn.style.border = "none";
-                addTaskBtn.style.color = "#28a745"; // Green
-                addTaskBtn.style.cursor = "pointer";
-                addTaskBtn.style.fontWeight = "bold";
-                addTaskBtn.style.margin = "10px auto";
-                addTaskBtn.style.display = "block";
+            // Card look
+            addTaskBtn.style.display = "block";
+            addTaskBtn.style.padding = "12px 16px";
+            addTaskBtn.style.margin = "10px";
+            addTaskBtn.style.background = "#fff";
+            addTaskBtn.style.border = "1px solid #ddd";
+            addTaskBtn.style.borderRadius = "8px";
+            addTaskBtn.style.cursor = "pointer";
+            addTaskBtn.style.fontWeight = "500";
+            addTaskBtn.style.fontSize = "14px";
+            addTaskBtn.style.boxShadow = "0 1px 2px rgba(0,0,0,0.05)";
+            addTaskBtn.style.transition = "box-shadow 0.2s ease";
+            addTaskBtn.style.textAlign = "center";
 
-                addTaskBtn.onclick = () => {
-                    const projectId = (this.container.querySelector("select") as HTMLSelectElement)?.value;
-                    if (!projectId) {
-                        alert("Please select a project first.");
-                        return;
-                    }
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const entityOptions: any = {
-                        entityName: "dyn_projecttask",
-                        useQuickCreateForm: true
-                    };
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const formParameters: any = {
-                        "dyn_project@odata.bind": `/dyn_projects(${projectId})`,
-                        "dyn_status": statusNum
-                    };
+            addTaskBtn.onmouseover = () => {
+                addTaskBtn.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+            };
+            addTaskBtn.onmouseout = () => {
+                addTaskBtn.style.boxShadow = "0 1px 2px rgba(0,0,0,0.05)";
+            };
 
-                    Xrm.Navigation.openForm(entityOptions, formParameters).then(
-                        (lookup) => {
-
-                            this.loadTasks(projectId).then(() => {
-                                this.renderKanban()
-                            }
-                        ).catch((error) => {
-                                console.error("Error loading tasks:", error);
-                            });
-                            return;
-                        },
-                    ).catch((error) => {
-                        console.error("Quick Create failed or closed:", error);
-                    });
+            addTaskBtn.onclick = () => {
+                const projectSelect = this.container.querySelector("select") as HTMLSelectElement;
+                const projectId = projectSelect?.value;
+                const projectName = projectSelect?.selectedOptions[0]?.text;
+                if (!projectId) {
+                    alert("Please select a project first.");
+                    return;
+                }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const entityOptions = {
+                    entityName: "dyn_projecttask",
+                    useQuickCreateForm: true
+                };
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const formParameters: any = {
+                    dyn_project: {
+                        id: projectId,
+                        entityType: "dyn_project",
+                        name: projectName
+                    },
+                    dyn_status: statusNum
                 };
 
-                column.appendChild(addTaskBtn);
-         
+                Xrm.Navigation.openForm(entityOptions, formParameters).then(
+                    () => {
+
+                        this.loadTasks(projectId).then(() => {
+                            this.renderKanban()
+                            return;
+                        }
+                        ).catch((error) => {
+                            console.error("Error loading tasks:", error);
+                        });
+                        return;
+                    },
+                ).catch((error) => {
+                    console.error("Quick Create failed or closed:", error);
+                });
+            };
+
+            column.appendChild(addTaskBtn);
+
 
             column.appendChild(taskList);
             board.appendChild(column);
@@ -307,11 +327,10 @@ export class DraggableControl implements ComponentFramework.StandardControl<IInp
                     }
                 }
             });
+
         }
 
-        this.container.appendChild(board)
-        console.log("hsdfcfvgbhnfcvxcvii");
-       
+        this.container.appendChild(board);
     }
 
     private async updateTaskStatus(taskId: string, newStatus: number): Promise<void> {
