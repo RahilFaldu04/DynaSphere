@@ -292,7 +292,9 @@ export class DraggableControl implements ComponentFramework.StandardControl<IInp
                 });
             };
 
-            column.appendChild(addTaskBtn);
+            if(statusNum == 1){//Status=Not Started
+                column.appendChild(addTaskBtn);
+            }
 
 
             column.appendChild(taskList);
