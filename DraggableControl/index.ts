@@ -102,7 +102,7 @@ export class DraggableControl implements ComponentFramework.StandardControl<IInp
             dyn_projecttaskid: task.dyn_projecttaskid,
             dyn_taskname: task.dyn_taskname,
             dyn_status: task.dyn_status,
-            assignto: task["_createdby_value@OData.Community.Display.V1.FormattedValue"],
+            assignto: task["_ownerid_value@OData.Community.Display.V1.FormattedValue"],
             dyn_projecttask: task.dyn_projecttask,
         }));
     }
