@@ -96,7 +96,7 @@ export class DraggableControl implements ComponentFramework.StandardControl<IInp
     private async loadTasks(projectId: string): Promise<void> {
         const res = await this.context.webAPI.retrieveMultipleRecords(
             "dyn_projecttask",
-            `?$select=dyn_projecttaskid,dyn_taskname,dyn_status,_createdby_value,dyn_projecttask,modifiedon&$filter=_dyn_project_value eq ${projectId}&$orderby=modifiedon desc`
+            `?$select=dyn_projecttaskid,dyn_taskname,dyn_status,_createdby_value,dyn_projecttask,modifiedon,_ownerid_value,ownerid&$filter=_dyn_project_value eq ${projectId}&$orderby=modifiedon desc`
         );
         this.tasks = res.entities.map(task => ({
             dyn_projecttaskid: task.dyn_projecttaskid,
